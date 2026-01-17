@@ -1,32 +1,43 @@
 <?php
 
-use App\Http\Controllers\StudentController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('client.layout.master');
 });
 
-Route::get('test', function (){
-    return view('test.abc.xyz.test');
+Route::get('home', function () {
+    return view('client.pages.home');
 });
 
-Route::get('a/b/c', function (){
-    echo '<h1>C</h1>';
+Route::get('cart', function () {
+    return view('client.pages.cart');
 });
 
-Route::get('product/detail/{id}/product_category/{categoryId?}', function(string|int $id, string|int $productCategoryId = 37){
-    echo "product $id category : $productCategoryId";
+Route::get('contact', function () {
+    return view('client.pages.contact');
 });
 
-
-Route::get('product_category/detail/{id}', function(string|int $id){
-    echo "category : $id";
+Route::get('checkout', function () {
+    return view('client.pages.checkout');
 });
 
-
-Route::get('product_category/detail/18', function(){
-    echo "category : 18+++++++";
+Route::get('product_list', function () {
+    return view('client.pages.product_list');
 });
 
-Route::get('students', [StudentController::class, 'index']);
+Route::get('product_detail', function () {
+    return view('client.pages.product_detail');
+});
+
+Route::get('admin/home', function(){
+    return view('admin.layout.master');
+});
+
+Route::get('admin/product_category/index', function(){
+    return view('admin.pages.product_category.index');
+});
+
+Route::get('admin/product_category/create', function(){
+    return view('admin.pages.product_category.create');
+});
