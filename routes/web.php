@@ -41,4 +41,10 @@ Route::get('admin/product_category/create', [ProductCategoryController::class, '
 
 Route::post('admin/product_category/save',[ProductCategoryController::class, 'store'])->name('admin.product-category.store');
 
-Route::get('admin/product_category/id/{id}',[ProductCategoryController::class, 'detail'])->name('admin.product-category.detail');
+Route::post('admin/product_category/update/{id}',[ProductCategoryController::class, 'update'])->name('admin.product-category.update');
+
+Route::get('admin/product_category/detail/{id}',[ProductCategoryController::class, 'detail'])->name('admin.product-category.detail');
+
+Route::post('admin/product_category/destroy/{id}',[ProductCategoryController::class, 'destroy'])->name('admin.product-category.destroy');
+
+Route::post('admin/product_category/make_slug', [ProductCategoryController::class, 'makeSlug'])->name('admin.product-category.make-slug');

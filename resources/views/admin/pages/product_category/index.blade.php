@@ -34,6 +34,18 @@
                             <a href="http://localhost:8000/admin/product_category/create" class="btn btn-primary">Create</a>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            @if(session('message'))
+                                @php 
+                                    $isSuccess = str_contains(session('message'), 'success');
+                                @endphp 
+                                <div class="alert alert-{{ $isSuccess ? 'success' : 'danger' }}">
+                                    {!! session('message') !!}
+                                </div>
+                            @endif
+                        </div>
+                    </div>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -60,6 +72,10 @@
                                 <td>{{ Carbon\Carbon::parse($data->created_at)->format('d-m-Y H:i:s') }}</td>
                                 <td>
                                     <a href="{{ route('admin.product-category.detail', ['id' => $data->id]) }}" class="btn btn-primary">Detail</a>
+                                    <form action="{{ route('admin.product-category.destroy', ['id' => $data->id]) }}" method="post">
+                                        {{ csrf_field() }}
+                                        <button type="submit" onclick="return confirm('Are you sure?')" href="" class="btn btn-danger">Delete</button>
+                                    </form>
                                 </td>
                             </tr>
                         @endforeach

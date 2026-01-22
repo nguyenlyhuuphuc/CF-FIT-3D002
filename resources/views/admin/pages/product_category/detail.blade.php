@@ -30,19 +30,19 @@
               </div>
               <!-- /.card-header -->
               <!-- form start -->
-              <form role="form" method="post" action="{{ route('admin.product-category.store') }}">
+              <form role="form" method="post" action="{{ route('admin.product-category.update',['id' => $data->id]) }}">
                  {{ csrf_field() }}
                 <div class="card-body">
                   <div class="form-group">
                     <label for="name">Name</label>
-                    <input type="text" name="name" class="form-control @error('name') is-invalid @enderror " id="name" placeholder="Enter name">
+                    <input type="text" value="{{ $data->name }}" name="name" class="form-control @error('name') is-invalid @enderror " id="name" placeholder="Enter name">
                     @error('name')
                         <div class="text-danger">{{ $message }}</small>
                     @enderror
                   </div>
                   <div class="form-group">
                     <label for="slug">Slug</label>
-                    <input type="text" name="slug" class="form-control @error('slug') is-invalid @enderror " id="slug" placeholder="Enter slug">
+                    <input type="text" value="{{ $data->slug }}" name="slug" class="form-control @error('slug') is-invalid @enderror " id="slug" placeholder="Enter slug">
                     @error('slug')
                         <div class="text-danger">{{ $message }}</small>
                     @enderror
@@ -52,8 +52,8 @@
                         <label>Status</label>
                         <select name="status" class="form-control @error('status') is-invalid @enderror ">
                           <option value="">--- Please select---</option>
-                          <option value="1">Show</option>
-                          <option value="0">Hide</option>
+                          <option {{ $data->status == '1' ? 'selected' : '' }} value="1">Show</option>
+                          <option {{ $data->status == '0' ? 'selected' : '' }} value="0">Hide</option>
                         </select>
                       </div>
                   </div>
@@ -62,7 +62,7 @@
                   @enderror
                 </div>
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-primary">Create</button>
+                  <button type="submit" class="btn btn-primary">Update</button>
                 </div>
               </form>
             </div>

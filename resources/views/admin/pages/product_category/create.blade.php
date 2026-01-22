@@ -73,4 +73,26 @@
     </section>
     <!-- /.content -->
   </div>
+
+
 @endsection
+
+@section('my-js')
+<script type="text/javascript">
+    $(document).ready(function (){
+      $('#name').on('keyup', function(){
+          var value = $('#name').val();
+        
+          $.ajax({
+            method: "POST", //method of form
+            url: "{{ route('admin.product-category.make-slug') }}", //action of form
+            data: { slug: value, _token: "{{ csrf_token() }}" } //input name
+          }).done(function(response) {
+             $('#slug').val(response.slug); 
+          });
+ 
+      });
+    });
+</script>
+@endsection
+  
