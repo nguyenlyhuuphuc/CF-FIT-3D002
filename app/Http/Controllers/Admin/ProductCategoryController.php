@@ -9,16 +9,26 @@ use Illuminate\Support\Str;
 
 class ProductCategoryController extends Controller
 {
-    public function index(){
-        //select * from product_category_new order by created_at desc
-        $datas = DB::table('product_category_new')
-        ->orderBy('created_at', 'desc')->get();
+    public function index(Request $request){
+        $page = $request->page ?? 1;
+        $totalRecords = DB::table('product_category')->count();
+        $itemPerPage = 10;
+        $totalPages = ceil($totalRecords / $itemPerPage);
+        $limit = $itemPerPage;
+        $offset = $limit * ($page - 1);
+        
+        $datas = DB::table('product_category')
+        ->orderBy('id', 'desc')
+        ->offset($offset)
+        ->limit($limit)
+        ->get();
 
-        return view('admin.pages.product_category.index', ['datas' => $datas]);
+
+        return view('admin.pages.product_category.index', ['datas' => $datas, 'totalPages' => $totalPages]);
     }
 
     public function destroy(string $id){
-        $data = DB::table('product_category_new')->where('id', $id)->delete();
+        $data = DB::table('product_category')->where('id', $id)->delete();
 
         $message = $data ? 'Delete success' : 'Delete failed';
 
@@ -37,7 +47,7 @@ class ProductCategoryController extends Controller
             'slug.required' => 'Slug buoc phai nhap.'
         ]);
 
-        $check = DB::table('product_category_new')->where('id', $id)->update([
+        $check = DB::table('product_category')->where('id', $id)->update([
             'name' => $request->name,
             'slug' => $request->slug,
             'status' => $request->status
@@ -50,7 +60,7 @@ class ProductCategoryController extends Controller
     }
 
     public function detail(string $id){
-        $data = DB::table('product_category_new')->find($id);
+        $data = DB::table('product_category')->find($id);
         return view('admin.pages.product_category.detail', ['data' => $data]);
     }
     
@@ -61,7 +71,7 @@ class ProductCategoryController extends Controller
     public function store(Request $request){
         //Validate data
         $request->validate([
-            'name' => ['required', 'min:3', 'max:10', 'unique:product_category_new'],
+            'name' => ['required', 'min:3', 'max:10', 'unique:product_category'],
             'slug' => 'required|min:3|max:10',
             'status' => ['required']
         ], [
@@ -70,7 +80,7 @@ class ProductCategoryController extends Controller
         ]);
 
         //Fresh data
-        $result = DB::table('product_category_new')->insert([
+        $result = DB::table('product_category')->insert([
             'name' => $request->name,
             'slug' => $request->slug,
             'status' => $request->status
@@ -85,7 +95,7 @@ class ProductCategoryController extends Controller
     public function makeSlug(Request $request){
         $slug = Str::slug($request->slug);
 
-        $check = DB::table('product_category_new')->where('slug', '=', $slug)->count();
+        $check = DB::table('product_category')->where('slug', '=', $slug)->count();
 
         if($check){
             $slug = Str::slug($request->slug.' '.uniqid());
