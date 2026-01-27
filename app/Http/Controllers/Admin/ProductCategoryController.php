@@ -9,22 +9,13 @@ use Illuminate\Support\Str;
 
 class ProductCategoryController extends Controller
 {
-    public function index(Request $request){
-        $page = $request->page ?? 1;
-        $totalRecords = DB::table('product_category')->count();
-        $itemPerPage = 10;
-        $totalPages = ceil($totalRecords / $itemPerPage);
-        $limit = $itemPerPage;
-        $offset = $limit * ($page - 1);
-        
+    public function index(Request $request){       
+        //Query Builder 
         $datas = DB::table('product_category')
         ->orderBy('id', 'desc')
-        ->offset($offset)
-        ->limit($limit)
-        ->get();
+        ->paginate( config('my-config.item_per_page'));
 
-
-        return view('admin.pages.product_category.index', ['datas' => $datas, 'totalPages' => $totalPages]);
+        return view('admin.pages.product_category.index', ['datas' => $datas]);
     }
 
     public function destroy(string $id){
@@ -39,8 +30,8 @@ class ProductCategoryController extends Controller
     public function update(string $id, Request $request){
         //Validate data
         $request->validate([
-            'name' => ['required', 'min:3', 'max:10'],
-            'slug' => 'required|min:3|max:10',
+            'name' => ['required', 'min:3', 'max:100'],
+            'slug' => 'required|min:3|max:100',
             'status' => ['required']
         ], [
             'name.required' => 'Name is required',

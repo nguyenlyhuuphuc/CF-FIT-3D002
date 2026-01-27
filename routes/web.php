@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\Admin\ProductCategoryController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('client.layout.master');
+    // return view('client.layout.master');
+    return view('welcome');
 });
 
 Route::get('home', function () {
@@ -48,3 +50,15 @@ Route::get('admin/product_category/detail/{id}',[ProductCategoryController::clas
 Route::post('admin/product_category/destroy/{id}',[ProductCategoryController::class, 'destroy'])->name('admin.product-category.destroy');
 
 Route::post('admin/product_category/make_slug', [ProductCategoryController::class, 'makeSlug'])->name('admin.product-category.make-slug');
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__.'/auth.php';

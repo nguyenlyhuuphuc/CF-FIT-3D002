@@ -84,13 +84,7 @@
                 </div>
                 <!-- /.card-body -->
                 <div class="card-footer clearfix">
-                    <ul class="pagination pagination-sm m-0 float-right">
-                    <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
-                    @for ($page = 1; $page <= $totalPages; $page++)
-                        <li class="page-item"><a class="page-link" href="?page={{ $page }}">{{ $page }}</a></li>
-                    @endfor
-                    <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
-                    </ul>
+                    {{ $datas->links() }}
                 </div>
                 </div>
             </div>
