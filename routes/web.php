@@ -2,12 +2,21 @@
 
 use App\Http\Controllers\Admin\ProductCategoryController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Middleware\CheckIs18Age;
+use App\Http\Middleware\CheckIsAdmin;
 use Illuminate\Support\Facades\Route;
+
+Route::get('7up', function(){
+    return '7 Up';
+});
+Route::get('hennessy', function(){
+    return 'hennessy';
+})->middleware('auth');
 
 Route::get('/', function () {
     // return view('client.layout.master');
     return view('welcome');
-});
+})->name('home');
 
 Route::get('home', function () {
     return view('client.pages.home');
@@ -37,19 +46,18 @@ Route::get('admin/home', function(){
     return view('admin.layout.master');
 });
 
-Route::get('admin/product_category/index',[ProductCategoryController::class, 'index'])->name('admin.product_category.index');
-
-Route::get('admin/product_category/create', [ProductCategoryController::class, 'create'])->name('admin.product_category.create');
-
-Route::post('admin/product_category/save',[ProductCategoryController::class, 'store'])->name('admin.product-category.store');
-
-Route::post('admin/product_category/update/{id}',[ProductCategoryController::class, 'update'])->name('admin.product-category.update');
-
-Route::get('admin/product_category/detail/{id}',[ProductCategoryController::class, 'detail'])->name('admin.product-category.detail');
-
-Route::post('admin/product_category/destroy/{id}',[ProductCategoryController::class, 'destroy'])->name('admin.product-category.destroy');
-
-Route::post('admin/product_category/make_slug', [ProductCategoryController::class, 'makeSlug'])->name('admin.product-category.make-slug');
+Route::controller(ProductCategoryController::class)
+->prefix('admin/product_category')
+->middleware(CheckIsAdmin::class)
+->name('admin.product_category.')->group(function(){
+    Route::get('index', 'index')->name('index');
+    Route::get('create', 'create')->name('create');
+    Route::post('save', 'store')->name('store');
+    Route::post('update/{id}', 'update')->name('update');
+    Route::get('detail/{id}', 'detail')->name('detail');
+    Route::post('destroy/{id}', 'destroy')->name('destroy');
+    Route::post('make_slug', 'makeSlug')->name('make-slug');
+});
 
 Route::get('/dashboard', function () {
     return view('dashboard');

@@ -30,7 +30,7 @@
               </div>
               <!-- /.card-header -->
               <!-- form start -->
-              <form role="form" method="post" action="{{ route('admin.product-category.update',['id' => $data->id]) }}">
+              <form role="form" method="post" action="{{ route('admin.product_category.update',['id' => $data->id]) }}">
                  {{ csrf_field() }}
                 <div class="card-body">
                   <div class="form-group">
