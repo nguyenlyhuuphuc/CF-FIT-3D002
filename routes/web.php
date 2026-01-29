@@ -1,9 +1,10 @@
 <?php
 
 use App\Http\Controllers\Admin\ProductCategoryController;
+use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Middleware\CheckIs18Age;
 use App\Http\Middleware\CheckIsAdmin;
+use App\Models\ProductCategory;
 use Illuminate\Support\Facades\Route;
 
 Route::get('7up', function(){
@@ -45,6 +46,13 @@ Route::get('product_detail', function () {
 Route::get('admin/home', function(){
     return view('admin.layout.master');
 });
+
+Route::prefix('admin')
+->name('admin.')
+->group(function(){
+    Route::resource('product', ProductController::class);
+});
+
 
 Route::controller(ProductCategoryController::class)
 ->prefix('admin/product_category')

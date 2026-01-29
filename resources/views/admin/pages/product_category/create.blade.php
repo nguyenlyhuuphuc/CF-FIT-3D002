@@ -30,7 +30,7 @@
               </div>
               <!-- /.card-header -->
               <!-- form start -->
-              <form role="form" method="post" action="{{ route('admin.product-category.store') }}">
+              <form role="form" method="post" action="{{ route('admin.product_category.store') }}">
                  {{ csrf_field() }}
                 <div class="card-body">
                   <div class="form-group">
@@ -85,7 +85,7 @@
         
           $.ajax({
             method: "POST", //method of form
-            url: "{{ route('admin.product-category.make-slug') }}", //action of form
+            url: "{{ route('admin.product_category.make-slug') }}", //action of form
             data: { slug: value, _token: "{{ csrf_token() }}" } //input name
           }).done(function(response) {
              $('#slug').val(response.slug); 

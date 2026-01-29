@@ -26,6 +26,7 @@
   <link rel="stylesheet" href="{{ asset('admin_asset/plugins/summernote/summernote-bs4.css') }}">
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
@@ -189,13 +190,15 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="http://localhost:8000/admin/product_category/index" class="nav-link active">
+                <a href="{{ route('admin.product_category.index') }}" class="nav-link 
+                {{ str_contains(request()->route()->getName(), 'product_category') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Product Category</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="./index2.html" class="nav-link">
+                <a href="{{ route('admin.product.index') }}" class="nav-link 
+                {{ str_contains(request()->route()->getName(), 'product.') ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Product</p>
                 </a>
@@ -229,6 +232,7 @@
 <!-- ./wrapper -->
 
 <!-- jQuery -->
+ <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 <script src="{{ asset('admin_asset/plugins/jquery/jquery.min.js') }}"></script>
 <!-- jQuery UI 1.11.4 -->
 <script src="{{ asset('admin_asset/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
@@ -242,9 +246,6 @@
 <script src="{{ asset('admin_asset/plugins/chart.js/Chart.min.js') }}"></script>
 <!-- Sparkline -->
 <script src="{{ asset('admin_asset/plugins/sparklines/sparkline.js') }}"></script>
-<!-- JQVMap -->
-<script src="{{ asset('admin_asset/plugins/jqvmap/jquery.vmap.min.js') }}"></script>
-<script src="{{ asset('admin_asset/plugins/jqvmap/maps/jquery.vmap.usa.js') }}"></script>
 <!-- jQuery Knob Chart -->
 <script src="{{ asset('admin_asset/plugins/jquery-knob/jquery.knob.min.js') }}"></script>
 <!-- daterangepicker -->
@@ -261,7 +262,7 @@
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="{{ asset('admin_asset/dist/js/pages/dashboard.js') }}"></script>
 <!-- AdminLTE for demo purposes -->
-<script src="{{ asset('admin_asset/dist/js/demo.js') }}"></script>
+
 @yield('my-js')
 </body>
 </html>
