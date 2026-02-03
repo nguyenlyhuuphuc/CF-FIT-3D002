@@ -83,9 +83,10 @@
                                 </td>
                                 <td>{{ Carbon\Carbon::parse($data->created_at)->format('d-m-Y H:i:s') }}</td>
                                 <td>
-                                    <a href="{{ route('admin.product_category.detail', ['id' => $data->id]) }}" class="btn btn-primary">Detail</a>
-                                    <form action="{{ route('admin.product_category.destroy', ['id' => $data->id]) }}" method="post">
+                                    <a href="{{ route('admin.product.show', ['product' => $data->id]) }}" class="btn btn-primary">Detail</a>
+                                    <form action="{{ route('admin.product.destroy', ['product' => $data->id]) }}" method="post">
                                         {{ csrf_field() }}
+                                        @method('DELETE')
                                         <button type="submit" onclick="return confirm('Are you sure?')" href="" class="btn btn-danger">Delete</button>
                                     </form>
                                 </td>

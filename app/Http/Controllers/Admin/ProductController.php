@@ -15,6 +15,7 @@ class ProductController extends Controller
      */
     public function index()
     {
+        //Query Builder //Eloquent
         $datas = DB::table('product')
         ->select(['product.*', 'product_category.name as product_category_name'])
         ->leftJoin('product_category', 'product.product_category_id','=', 'product_category.id')
@@ -75,8 +76,6 @@ class ProductController extends Controller
             'updated_at' => Carbon::now(),
         ]);
 
-
-
         $message = $result ? 'Add success' : 'Add failed';
 
         //Flash message (session)
@@ -88,7 +87,14 @@ class ProductController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $product = DB::table('product')->find($id);
+
+        $productCategories = DB::table('product_category')
+        ->where('status', 1)
+        ->orderBy('id', 'desc')
+        ->get();
+
+        return view('admin.pages.product.detail', ['product' => $product, 'productCategories' => $productCategories]);
     }
 
     /**
@@ -104,7 +110,49 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+         $request->validate([
+            'name' => 'required',
+            'price' => 'required',
+            'qty' => 'required',
+            'description' => 'required',
+            'status'  => 'required',
+            'product_category_id' => 'required',
+            'image' => 'image',
+        ]);
+
+        if($request->hasFile('image')){
+            $imageName = $request->file('image')->getClientOriginalName();
+            $nameOrigin = sprintf('%s-%s', 
+                pathinfo($imageName, PATHINFO_FILENAME),
+                uniqid()
+            );
+
+            $extension = pathinfo($imageName, PATHINFO_EXTENSION);
+            $nameFinal = sprintf('%s.%s', $nameOrigin, $extension);
+            $request->file('image')->move(public_path('images'), $nameFinal);
+        }else{
+            $product = DB::table('product')->find($id);
+            $nameFinal = $product->image;
+        }
+        
+        $result = DB::table('product')->where('id', $id)->update([
+            'name' => $request->name,
+            'image' => $nameFinal,
+            'price' => $request->price,
+            'sku' => sprintf('sku-%s', uniqid()),
+            'slug'=> Str::slug($request->name),
+            'qty' => $request->qty,
+            'description' => $request->description,
+            'status' => $request->status,
+            'product_category_id' => $request->product_category_id,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
+
+        $message = $result ? 'Update success' : 'Update failed';
+
+        //Flash message (session)
+        return redirect()->route('admin.product.index')->with('message',  $message );
     }
 
     /**
@@ -112,6 +160,11 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $data = DB::table('product')->where('id', $id)->delete();
+
+        $message = $data ? 'Delete success' : 'Delete failed';
+
+        //Flash message (session)
+        return redirect()->route('admin.product.index')->with('message',  $message );
     }
 }

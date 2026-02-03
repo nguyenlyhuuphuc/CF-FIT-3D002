@@ -62,7 +62,7 @@ Route::controller(ProductCategoryController::class)
     Route::get('create', 'create')->name('create');
     Route::post('save', 'store')->name('store');
     Route::post('update/{id}', 'update')->name('update');
-    Route::get('detail/{id}', 'detail')->name('detail');
+    Route::get('detail/{product_category}', 'detail')->name('detail');
     Route::post('destroy/{id}', 'destroy')->name('destroy');
     Route::post('make_slug', 'makeSlug')->name('make-slug');
 });

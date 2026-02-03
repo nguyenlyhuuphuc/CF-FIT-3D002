@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -11,15 +12,22 @@ class ProductCategoryController extends Controller
 {
     public function index(Request $request){       
         //Query Builder 
-        $datas = DB::table('product_category')
-        ->orderBy('id', 'desc')
-        ->paginate( config('my-config.item_per_page'));
+        // $datas = DB::table('product_category')
+        // ->orderBy('id', 'desc')
+        // ->paginate( config('my-config.item_per_page'));
+
+        //Eloquent
+        $datas = ProductCategory::orderBy('id','desc')->paginate(config('my-config.item_per_page'));
 
         return view('admin.pages.product_category.index', ['datas' => $datas]);
     }
 
-    public function destroy(string $id){
-        $data = DB::table('product_category')->where('id', $id)->delete();
+    public function destroy(ProductCategory $productCategory){
+        //Query Builder
+        // $data = DB::table('product_category')->where('id', $id)->delete();
+        //Eloquent
+        // $data = ProductCategory::find($id)->delete();
+        $data = $productCategory->delete();
 
         $message = $data ? 'Delete success' : 'Delete failed';
 
@@ -38,7 +46,15 @@ class ProductCategoryController extends Controller
             'slug.required' => 'Slug buoc phai nhap.'
         ]);
 
-        $check = DB::table('product_category')->where('id', $id)->update([
+        //Query Builder
+        // $check = DB::table('product_category')->where('id', $id)->update([
+        //     'name' => $request->name,
+        //     'slug' => $request->slug,
+        //     'status' => $request->status
+        // ]);
+
+        //Eloquent
+        $check = ProductCategory::find($id)->update([
             'name' => $request->name,
             'slug' => $request->slug,
             'status' => $request->status
@@ -50,9 +66,12 @@ class ProductCategoryController extends Controller
         return redirect()->route('admin.product_category.index')->with('message',  $message );
     }
 
-    public function detail(string $id){
-        $data = DB::table('product_category')->find($id);
-        return view('admin.pages.product_category.detail', ['data' => $data]);
+    public function detail(ProductCategory $productCategory){
+        //Query Builder
+        // $data = DB::table('product_category')->find($id);
+        //Eloquent
+        // $data = ProductCategory::findOrFail($productCategory);
+        return view('admin.pages.product_category.detail', ['data' => $productCategory]);
     }
     
     public function create(){
@@ -71,7 +90,21 @@ class ProductCategoryController extends Controller
         ]);
 
         //Fresh data
-        $result = DB::table('product_category')->insert([
+        //Query Builder
+        // $result = DB::table('product_category')->insert([
+        //     'name' => $request->name,
+        //     'slug' => $request->slug,
+        //     'status' => $request->status
+        // ]);
+
+        //Eloquent
+        // $productCategory = new ProductCategory();
+        // $productCategory->name = $request->name;
+        // $productCategory->slug = $request->slug;
+        // $productCategory->status = $request->status;
+        // $result = $productCategory->save(); //Insert new record
+
+        $result = ProductCategory::create([
             'name' => $request->name,
             'slug' => $request->slug,
             'status' => $request->status
@@ -86,7 +119,10 @@ class ProductCategoryController extends Controller
     public function makeSlug(Request $request){
         $slug = Str::slug($request->slug);
 
-        $check = DB::table('product_category')->where('slug', '=', $slug)->count();
+        //Query Builder
+        // $check = DB::table('product_category')->where('slug', '=', $slug)->count();
+        //Eloquent
+        $check = ProductCategory::where('slug',$slug)->count();
 
         if($check){
             $slug = Str::slug($request->slug.' '.uniqid());
