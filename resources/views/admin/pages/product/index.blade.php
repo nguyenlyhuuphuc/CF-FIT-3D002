@@ -31,7 +31,7 @@
                             <h3 class="card-title">Product List</h3>
                         </div>
                         <div class="col-md-6 text-right">
-                            <a href="http://localhost:8000/admin/product_category/create" class="btn btn-primary">Create</a>
+                            <a href="{{ route('admin.product.create') }}" class="btn btn-primary">Create</a>
                         </div>
                     </div>
                     <div class="row">
@@ -79,7 +79,7 @@
                                     {{ $data->description }}
                                 </td>
                                 <td>
-                                    {{ $data->product_category_name }}
+                                    {{ $data->productCategory->name }}
                                 </td>
                                 <td>{{ Carbon\Carbon::parse($data->created_at)->format('d-m-Y H:i:s') }}</td>
                                 <td>

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product;
+use App\Models\ProductCategory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,10 +18,15 @@ class ProductController extends Controller
     public function index()
     {
         //Query Builder //Eloquent
-        $datas = DB::table('product')
-        ->select(['product.*', 'product_category.name as product_category_name'])
-        ->leftJoin('product_category', 'product.product_category_id','=', 'product_category.id')
-        ->paginate(config('my-config.item_per_page'));
+        // $datas = DB::table('product')
+        // ->select(['product.*', 'product_category.name as product_category_name'])
+        // ->leftJoin('product_category', 'product.product_category_id','=', 'product_category.id')
+        // ->orderBy('product.id', 'desc')
+        // ->paginate(1000);
+
+        $datas = Product::orderBy('id', 'desc')
+        ->with('productCategory')
+        ->paginate(1000);
 
         return view('admin.pages.product.index', ['datas' => $datas]);
     }
@@ -29,9 +36,15 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $productCategories = DB::table('product_category')
-        ->where('status', 1)
-        ->orderBy('id', 'desc')
+        //Query Builder
+        // $productCategories = DB::table('product_category')
+        // ->where('status', 1)
+        // ->orderBy('id', 'desc')
+        // ->get();
+
+        //Eloquent
+        $productCategories = ProductCategory::where('status',1)
+        ->orderBy('id','desc')
         ->get();
 
         return view('admin.pages.product.create', ['productCategories' => $productCategories]);
@@ -62,7 +75,22 @@ class ProductController extends Controller
         $nameFinal = sprintf('%s.%s', $nameOrigin, $extension);
         $request->file('image')->move(public_path('images'), $nameFinal);
 
-        $result = DB::table('product')->insert([
+        //Query Builder
+        // $result = DB::table('product')->insert([
+        //     'name' => $request->name,
+        //     'image' => $nameFinal,
+        //     'price' => $request->price,
+        //     'sku' => sprintf('sku-%s', uniqid()),
+        //     'slug'=> Str::slug($request->name),
+        //     'qty' => $request->qty,
+        //     'description' => $request->description,
+        //     'status' => $request->status,
+        //     'product_category_id' => $request->product_category_id,
+        //     'created_at' => Carbon::now(),
+        //     'updated_at' => Carbon::now(),
+        // ]);
+        //Eloquent
+        $result = Product::create([
             'name' => $request->name,
             'image' => $nameFinal,
             'price' => $request->price,
@@ -71,9 +99,7 @@ class ProductController extends Controller
             'qty' => $request->qty,
             'description' => $request->description,
             'status' => $request->status,
-            'product_category_id' => $request->product_category_id,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
+            'product_category_id' => $request->product_category_id
         ]);
 
         $message = $result ? 'Add success' : 'Add failed';
@@ -85,13 +111,17 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Product $product)
     {
-        $product = DB::table('product')->find($id);
+        //Query Builder
+        // $productCategories = DB::table('product_category')
+        // ->where('status', 1)
+        // ->orderBy('id', 'desc')
+        // ->get();
 
-        $productCategories = DB::table('product_category')
-        ->where('status', 1)
-        ->orderBy('id', 'desc')
+        //Eloquent
+        $productCategories = ProductCategory::where('status',1)
+        ->orderBy('id','desc')
         ->get();
 
         return view('admin.pages.product.detail', ['product' => $product, 'productCategories' => $productCategories]);
@@ -108,7 +138,7 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Product $product)
     {
          $request->validate([
             'name' => 'required',
@@ -131,11 +161,25 @@ class ProductController extends Controller
             $nameFinal = sprintf('%s.%s', $nameOrigin, $extension);
             $request->file('image')->move(public_path('images'), $nameFinal);
         }else{
-            $product = DB::table('product')->find($id);
+            // $product = DB::table('product')->find($id);
             $nameFinal = $product->image;
         }
-        
-        $result = DB::table('product')->where('id', $id)->update([
+        //Query Builder
+        // $result = DB::table('product')->where('id', $id)->update([
+        //     'name' => $request->name,
+        //     'image' => $nameFinal,
+        //     'price' => $request->price,
+        //     'sku' => sprintf('sku-%s', uniqid()),
+        //     'slug'=> Str::slug($request->name),
+        //     'qty' => $request->qty,
+        //     'description' => $request->description,
+        //     'status' => $request->status,
+        //     'product_category_id' => $request->product_category_id,
+        //     'created_at' => Carbon::now(),
+        //     'updated_at' => Carbon::now(),
+        // ]);
+        //Eloquent
+        $result = $product->update([
             'name' => $request->name,
             'image' => $nameFinal,
             'price' => $request->price,
@@ -144,9 +188,7 @@ class ProductController extends Controller
             'qty' => $request->qty,
             'description' => $request->description,
             'status' => $request->status,
-            'product_category_id' => $request->product_category_id,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
+            'product_category_id' => $request->product_category_id
         ]);
 
         $message = $result ? 'Update success' : 'Update failed';
@@ -158,9 +200,9 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Product $product)
     {
-        $data = DB::table('product')->where('id', $id)->delete();
+        $data = $product->delete();
 
         $message = $data ? 'Delete success' : 'Delete failed';
 

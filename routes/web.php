@@ -3,8 +3,12 @@
 use App\Http\Controllers\Admin\ProductCategoryController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Test\TestController;
 use App\Http\Middleware\CheckIsAdmin;
+use App\Mail\TestEmail;
 use App\Models\ProductCategory;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 Route::get('7up', function(){
@@ -78,3 +82,11 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+
+Route::get('test-send-mail', function(){
+    $name = Auth::user()->name;
+    Mail::to('test@gmail.com')->send(new TestEmail($name));
+});
+
+Route::get('test-send-mail-product-admin', [TestController::class, 'sendEmailProduct']);

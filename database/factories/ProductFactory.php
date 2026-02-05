@@ -21,9 +21,9 @@ class ProductFactory extends Factory
         $name = fake()->name();
         $slug = Str::slug($name);
 
-        $imageUrl = "https://picsum.photos/640/480?random=".rand();
-        $imageName = "images_".uniqid();
-        file_put_contents(public_path('images/'.$imageName. '.jpg'), file_get_contents($imageUrl));
+        // $imageUrl = "https://picsum.photos/640/480?random=".rand();
+        // $imageName = "images_".uniqid();
+        // file_put_contents(public_path('images/'.$imageName. '.jpg'), file_get_contents($imageUrl));
 
         return [
             'name' => $name,
@@ -34,7 +34,7 @@ class ProductFactory extends Factory
             'description' => fake()->sentence(),
             'short_description' => fake()->sentence(5),
             'status' => fake()->boolean(),
-            'image' =>  $imageName. '.jpg',
+            // 'image' =>  $imageName. '.jpg',
             'discount_price' => fake()->randomFloat(2, 0, 99),
             'product_category_id' => fake()->randomElement(ProductCategory::pluck('id'))
         ];
